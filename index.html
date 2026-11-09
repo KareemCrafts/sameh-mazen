@@ -324,6 +324,8 @@ dialog::backdrop { background: rgba(0,0,0,.7); }
 .how li { counter-increment: h; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; font-size: 1rem; }
 .how li b { font-weight: 600; }
 .how li::before { content: counter(h); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--brass-2); color: var(--brass); font-family: var(--display); font-size: 1.2rem; }
+.wa-float { position: fixed; z-index: 21; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 50%; background: #1f9d55; color: #fff; display: grid; place-items: center; box-shadow: 0 10px 24px -8px #000; }
+html[dir="rtl"] .wa-float { right: auto; left: max(16px, env(safe-area-inset-left, 0px)); }
 .toast { position: fixed; z-index: 40; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; transition: .3s; background: var(--fg); color: var(--bg); font-weight: 700; font-size: .88rem; padding: 10px 18px; border-radius: 999px; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -418,7 +420,7 @@ footer a { color: var(--muted); }
       <div class="find">
         <div><b data-i18n="hoursT">Hours</b><span class="muted small" data-i18n="hoursD">Open today, closes 12:01 AM</span></div>
         <div><b data-i18n="whereT">Where</b><a class="small" href="https://www.google.com/maps/search/?api=1&amp;query=Sameh%26mazen%20barber%20shop" target="_blank" rel="noopener" data-i18n="directions">Get directions on Google Maps</a></div>
-        <div><b data-i18n="waT">WhatsApp</b><span class="muted small" id="waShow"></span></div>
+        <div><b data-i18n="waT">WhatsApp</b><a class="small" id="waShow" href="https://wa.me/201017936378" target="_blank" rel="noopener">01017936378</a></div>
       </div>
     </section>
   </div></div>
@@ -675,6 +677,7 @@ footer a { color: var(--muted); }
   </div>
 </dialog>
 
+<a class="wa-float" href="https://wa.me/201017936378" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg></a>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -1307,7 +1310,7 @@ footer a { color: var(--muted); }
   function renderAll() {
     route();
     drawFresh(); renderBook(); renderClub(); renderQuiz(); renderGift(); renderBarber();
-    $("waShow").textContent = CONFIG.whatsapp ? "+20 101 793 6378" : T("Number coming soon", "الرقم قريب");
+    $("waShow").textContent = "01017936378 · " + T("Chat on WhatsApp", "كلّمنا واتساب"); $("waShow").href = "https://wa.me/" + CONFIG.whatsapp;
   }
   window.addEventListener("hashchange", function () { renderAll(); window.scrollTo(0, 0); if (barberOK && location.hash === "#barber") refreshBarber(); if (location.hash === "#club") loadMe(); });
   setInterval(function () { if (document.hidden) return; if (barberOK && location.hash === "#barber") refreshBarber(); else if (ME && location.hash === "#club") loadMe(); }, 20000);
