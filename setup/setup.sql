@@ -1,7 +1,8 @@
 -- =====================================================================
 -- Sameh & Mazen — database setup
--- How to use: Supabase → SQL Editor → New query → paste ALL of this → Run.
--- BEFORE you run it: change the barber email below (line with 'CHANGE-ME').
+-- How to use:
+--   1) First make the barber's login: Authentication → Users → Add user → Create new user.
+--   2) Then: SQL Editor → paste ALL of this → Run.
 -- =====================================================================
 
 -- ---------- tables ----------
@@ -292,5 +293,7 @@ grant execute on function public.is_barber(), public.b_customers(text), public.b
   public.b_today() to authenticated;
 
 -- ---------- the barber ----------
--- Write the email the barber will log in with (make the same user in Authentication → Users → Add user).
-insert into public.barbers (email) values ('CHANGE-ME@example.com') on conflict do nothing;
+-- Every login made in Authentication → Users becomes a barber.
+-- (Customers never get a login, so only the barbers have one.)
+-- If you add another barber later, just run this file again.
+insert into public.barbers (email) select lower(email) from auth.users where email is not null on conflict do nothing;
