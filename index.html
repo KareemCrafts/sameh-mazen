@@ -1,0 +1,1323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="description" content="Sameh & Mazen barber shop. Book on WhatsApp and collect stamps for free haircuts.">
+<link rel="icon" href="img/logo.png">
+<link rel="apple-touch-icon" href="img/icon-512.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Sameh &amp; Mazen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500&family=Cairo:wght@400;600;800&display=swap">
+<style>
+/* Layout: phone-first app. A sticky top bar with the badge, five views switched by a bottom tab bar (Home, Book, Club, Style, Gifts), and a hidden barber room at #barber. Black lacquer + cream + the brass of the shop's mirror lights. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0c;
+  --panel: #151517;
+  --panel-2: #1c1c1f;
+  --line: #2c2c30;
+  --line-2: #3d3d42;
+  --fg: #efece5;
+  --muted: #9b978f;
+  --brass: #d0ad6b;
+  --brass-2: #8c7144;
+  --brass-ink: #241d12;
+  --good: #8fc39a;
+  --warn: #e3a36b;
+  --bad: #e38b7a;
+  --display: "Bodoni Moda", "Didot", "Times New Roman", serif;
+  --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --ar: "Cairo", "Segoe UI", Tahoma, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+img { max-width: 100%; }
+:root { padding-top: env(safe-area-inset-top, 0px); }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.55;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+html[lang="ar"] body, html[lang="ar"] button, html[lang="ar"] input, html[lang="ar"] select, html[lang="ar"] textarea { font-family: var(--ar); }
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3 { font-family: var(--ar); font-weight: 800; letter-spacing: 0; }
+html[lang="ar"] .eyebrow { letter-spacing: 0; font-family: var(--ar); font-size: .8rem; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.inner { max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; text-wrap: balance; line-height: 1.12; }
+h2 { font-size: clamp(1.7rem, 5vw, 2.3rem); }
+h2 em, h1 em { color: var(--brass); font-style: italic; }
+h3 { font-size: 1.2rem; }
+p { margin: 0; }
+a { color: var(--brass); }
+.eyebrow { font-family: var(--mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--brass); }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.stack { display: grid; gap: 14px; }
+.section { display: grid; gap: 18px; padding-block: 34px; border-top: 1px solid #1c1c1f; }
+.section:first-child { border-top: 0; }
+.note { font-size: .8rem; color: var(--muted); border: 1px dashed var(--line-2); border-radius: 10px; padding: 9px 12px; }
+
+/* top bar */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11,11,12,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid #1c1c1f; }
+.top .inner { display: flex; align-items: center; gap: 10px; padding-block: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); min-width: 0; }
+.brand img { width: 38px; height: 38px; }
+.brand b { font-family: var(--display); font-weight: 500; font-size: 1.15rem; white-space: nowrap; }
+.spacer { flex: 1; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--muted); white-space: nowrap; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 3px rgba(143,195,154,.15); }
+.lang { font: inherit; font-size: .78rem; font-weight: 700; background: transparent; color: var(--fg); border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+@media (max-width: 420px) { .status { display: none; } }
+
+/* bottom tabs */
+.tabs { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; background: rgba(15,15,17,.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs .inner { display: grid; grid-template-columns: repeat(5, 1fr); max-width: 560px; }
+.tabs a { display: grid; justify-items: center; gap: 3px; padding: 10px 2px 9px; color: var(--muted); text-decoration: none; font-size: .7rem; font-weight: 700; letter-spacing: .02em; }
+.tabs a svg { width: 22px; height: 22px; }
+.tabs a[aria-current="page"] { color: var(--brass); }
+.tabs a.club-tab span.badge { position: absolute; }
+
+/* buttons */
+button, .btn { font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer; border-radius: 999px; padding: 12px 20px; border: 1px solid var(--fg); background: var(--fg); color: var(--bg); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.gold, button.gold { background: var(--brass); border-color: var(--brass); color: var(--brass-ink); }
+.btn.ghost, button.ghost { background: transparent; color: var(--fg); border-color: var(--line-2); }
+button:disabled { opacity: .35; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* chips / choices */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: .86rem; font-weight: 600; cursor: pointer; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--panel); color: var(--fg); }
+.chip[aria-pressed="true"] { border-color: var(--brass); background: var(--brass-ink); color: var(--brass); }
+input, select, textarea { font: inherit; background: var(--panel); color: var(--fg); border: 1px solid var(--line-2); border-radius: 12px; padding: 11px 14px; width: 100%; }
+textarea { resize: vertical; min-height: 70px; }
+label.f { display: grid; gap: 6px; font-size: .8rem; color: var(--muted); }
+
+/* ===== HOME ===== */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid #1c1c1f; }
+.hero-img { position: absolute; inset: 0; background: url("img/chair.jpg") center 35% / cover no-repeat; filter: grayscale(.35) contrast(1.05) brightness(.55); transform: scale(1.04); }
+.hero::after { content: ""; position: absolute; inset: 0; background:
+  linear-gradient(180deg, rgba(11,11,12,.35) 0%, rgba(11,11,12,.55) 45%, var(--bg) 100%),
+  radial-gradient(60% 40% at 70% 20%, rgba(208,173,107,.18), transparent 70%); }
+.hero .inner { position: relative; z-index: 1; display: grid; gap: 18px; padding-block: 44px 34px; }
+.hero .seal { width: 112px; height: 112px; animation: spin-in 1.2s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes spin-in { from { transform: rotate(-120deg) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.hero h1 { font-size: clamp(2.6rem, 11vw, 4.6rem); letter-spacing: -.01em; line-height: .98; }
+.hero p.lead { font-size: 1.05rem; max-width: 30ch; color: #d9d5cc; }
+.rating { display: inline-flex; gap: 8px; align-items: center; font-size: .85rem; background: rgba(21,21,23,.7); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; justify-self: start; }
+.rating .stars { color: var(--brass); letter-spacing: 2px; }
+
+.fresh { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 14px; }
+.fresh-top { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.fresh-val { font-family: var(--display); font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.fresh-val small { font-family: var(--body); font-size: .85rem; color: var(--muted); margin-inline-start: 6px; }
+.meter { position: relative; height: 54px; border-radius: 12px; overflow: hidden; background: #0f0f10; border: 1px solid var(--line); }
+.meter canvas { width: 100%; height: 100%; display: block; }
+.fresh-scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .66rem; color: var(--muted); }
+.verdict { font-weight: 700; }
+
+.gallery { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
+.gallery figure { margin: 0; position: relative; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); min-height: 130px; }
+.gallery figure:first-child { grid-row: span 2; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.85); transition: transform .5s; }
+.gallery figure:hover img { transform: scale(1.04); }
+.gallery figcaption { position: absolute; inset: auto 0 0 0; padding: 18px 12px 9px; font-size: .75rem; font-weight: 700; background: linear-gradient(transparent, rgba(0,0,0,.75)); }
+
+.duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.barber { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.barber .mono-init { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: 1.6rem; border: 1px solid var(--brass-2); color: var(--brass); }
+.find { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.find div { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; }
+.find b { font-size: .95rem; }
+@media (max-width: 520px) { .find { grid-template-columns: 1fr; } }
+
+.teaser { background: linear-gradient(135deg, #1b1712, #121213 60%); border: 1px solid var(--brass-2); border-radius: 18px; padding: 20px; display: grid; gap: 12px; }
+
+/* ===== BOOK ===== */
+.step { display: grid; gap: 10px; }
+.step-h { display: flex; gap: 10px; align-items: baseline; }
+.step-n { font-family: var(--mono); font-size: .72rem; color: var(--brass); border: 1px solid var(--brass-2); border-radius: 50%; width: 24px; height: 24px; display: grid; place-items: center; flex: none; }
+.menu { display: grid; gap: 8px; }
+.svc { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; text-align: start; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; cursor: pointer; }
+.svc b { font-weight: 700; }
+.svc .price { font-family: var(--mono); color: var(--brass); font-size: .9rem; align-self: center; grid-row: span 2; }
+.svc span.d { font-size: .8rem; color: var(--muted); }
+.svc[aria-pressed="true"] { border-color: var(--brass); background: var(--brass-ink); }
+.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.day { flex: none; width: 62px; display: grid; justify-items: center; gap: 2px; padding: 10px 4px; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; cursor: pointer; }
+.day small { font-size: .66rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.day b { font-family: var(--display); font-size: 1.4rem; font-weight: 500; }
+.day[aria-pressed="true"] { border-color: var(--brass); background: var(--brass-ink); }
+.day[aria-pressed="true"] small { color: var(--brass); }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 8px; }
+.slot { font: inherit; font-family: var(--mono); font-size: .82rem; padding: 9px 4px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+.slot[aria-pressed="true"] { background: var(--brass); color: var(--brass-ink); border-color: var(--brass); }
+.slot.busy { text-decoration: line-through; color: #55534f; cursor: not-allowed; }
+.ticket { position: relative; background: var(--fg); color: #141414; border-radius: 16px; padding: 18px 20px; display: grid; gap: 10px; }
+.ticket::before, .ticket::after { content: ""; position: absolute; top: 58%; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
+.ticket::before { left: -11px; } .ticket::after { right: -11px; }
+.ticket .eyebrow { color: #8c7144; }
+.ticket h3 { color: #141414; }
+.ticket dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: .9rem; }
+.ticket dt { color: #6d6a64; }
+.ticket dd { margin: 0; font-weight: 700; }
+.ticket hr { border: 0; border-top: 2px dashed #cfcac0; margin: 4px 0; }
+.ticket button { background: #141414; border-color: #141414; color: var(--fg); }
+.btn.wa { background: #1f9d55; border-color: #1f9d55; color: #fff; }
+.btn.wa[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+.giftcheck { display: grid; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.gstate { border-radius: 12px; padding: 10px 14px; font-size: .9rem; }
+.gstate.ok { background: #14261b; color: var(--good); border: 1px solid #2d5a3b; }
+.gstate.wait { background: var(--brass-ink); color: var(--brass); border: 1px solid var(--brass-2); }
+.gstate.bad { background: #2a1714; color: var(--bad); border: 1px solid #5a2d27; }
+.msg { font-family: var(--mono); font-size: .78rem; background: #e7e3da; border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; color: #2a2a2a; }
+
+/* ===== CLUB ===== */
+.card {
+  background: radial-gradient(120% 80% at 100% 0%, #222225 0%, #141416 55%); border-radius: 20px; padding: 22px 20px 20px;
+  box-shadow: 0 30px 60px -30px #000, inset 0 0 0 1px #2c2c30; display: grid; gap: 16px; position: relative; overflow: hidden;
+}
+.card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(115deg, transparent 0 3px, rgba(255,255,255,.014) 3px 4px); }
+.card.tier-silver { box-shadow: 0 30px 60px -30px #000, inset 0 0 0 1px #8d8f96; }
+.card.tier-gold { box-shadow: 0 30px 60px -30px #000, inset 0 0 0 1.5px var(--brass); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card h3.lc { font-family: var(--display); font-size: clamp(1.7rem, 7vw, 2.2rem); letter-spacing: .04em; line-height: 1; }
+.card h3.lc em { font-weight: 700; color: var(--fg); }
+.card .tagline { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+.card-logo { width: 70px; height: 70px; flex: none; }
+.who { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.who b { font-size: 1rem; }
+.tierpill { font-family: var(--mono); font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid currentColor; }
+.tierpill.bronze { color: #c08a5b; } .tierpill.silver { color: #c4c7ce; } .tierpill.gold { color: var(--brass); }
+.stamps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.stamp { aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 1.5px solid var(--line-2); display: grid; place-items: center; position: relative; color: var(--line-2); transition: background .3s, border-color .3s, color .3s; }
+.stamp svg { width: 46%; height: 46%; }
+.stamp.done { background: var(--fg); border-color: var(--fg); color: #151517; }
+.stamp.reward { border-color: var(--brass-2); color: var(--brass-2); }
+.stamp.reward.done { background: var(--brass); border-color: var(--brass); color: #151517; }
+.stamp .n { position: absolute; bottom: -3px; inset-inline-end: -3px; font-family: var(--mono); font-size: .58rem; background: #151517; color: var(--muted); border-radius: 6px; padding: 0 3px; }
+.stamp.pop { animation: pop .5s ease; }
+@keyframes pop { 0% { transform: scale(.5) rotate(-25deg); } 70% { transform: scale(1.15) rotate(5deg); } 100% { transform: none; } }
+.progress { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid #2a2a2d; font-size: .86rem; }
+.bar { flex: 1; height: 4px; background: #2a2a2d; border-radius: 4px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brass); transition: width .5s; }
+.ready { background: var(--brass-ink); border: 1px solid var(--brass-2); color: var(--brass); border-radius: 12px; padding: 10px 14px; font-size: .88rem; }
+.ready b { color: var(--fg); }
+.qrbox { display: flex; gap: 14px; align-items: center; padding-top: 14px; border-top: 1px solid #2a2a2d; }
+.qr { background: #fff; padding: 6px; border-radius: 10px; width: 92px; height: 92px; flex: none; display: grid; place-items: center; color: #111; font-family: var(--mono); font-size: .7rem; }
+.qr img, .qr canvas { width: 80px !important; height: 80px !important; }
+.qrbox p { font-size: .82rem; color: var(--muted); min-width: 0; }
+.code { font-family: var(--mono); color: var(--fg); font-size: .98rem; letter-spacing: .08em; display: block; margin-bottom: 3px; }
+
+.stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 1.7rem; font-weight: 500; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: .74rem; color: var(--muted); }
+.flame { color: var(--warn); }
+
+.tiers { display: grid; gap: 10px; }
+.tier { display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.tier.on { border-color: var(--brass-2); }
+.tier .medal { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; }
+.tier p { color: var(--muted); font-size: .86rem; }
+.tierbar { height: 6px; border-radius: 6px; background: #232326; overflow: hidden; }
+.tierbar i { display: block; height: 100%; background: linear-gradient(90deg, #c08a5b, #c4c7ce 45%, var(--brass)); }
+
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; }
+.ladder li { display: grid; grid-template-columns: 58px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #1f1f22; }
+.ladder li:last-child { border-bottom: 0; }
+.visit { font-family: var(--display); font-size: 1.9rem; line-height: 1; color: var(--brass); font-variant-numeric: tabular-nums; }
+.visit small { display: block; font-family: var(--mono); font-size: .58rem; letter-spacing: .12em; color: var(--muted); margin-top: 4px; }
+.ladder li.got .visit { color: var(--muted); }
+.ladder h3 { font-size: 1.08rem; margin-bottom: 2px; }
+.ladder p { color: var(--muted); font-size: .88rem; }
+
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+.badge-c { display: grid; justify-items: center; text-align: center; gap: 6px; padding: 14px 8px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); }
+.badge-c svg { width: 40px; height: 40px; }
+.badge-c b { font-size: .8rem; }
+.badge-c span { font-size: .7rem; color: var(--muted); line-height: 1.35; }
+.badge-c.locked { opacity: .45; }
+.badge-c.locked svg { filter: grayscale(1); }
+.badge-c.earned { border-color: var(--brass-2); background: linear-gradient(180deg, #1d1912, var(--panel)); }
+
+.bonus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 480px) { .bonus { grid-template-columns: 1fr; } }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; background: var(--panel); }
+.tile .tag { font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--brass); }
+.tile h3 { font-family: var(--body); font-weight: 700; font-size: .95rem; }
+html[lang="ar"] .tile h3 { font-family: var(--ar); }
+.tile p { color: var(--muted); font-size: .85rem; }
+
+.refer { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.refer code { font-family: var(--mono); font-size: 1rem; letter-spacing: .1em; color: var(--brass); flex: 1; min-width: 0; }
+
+/* ===== STYLE ===== */
+.quiz { display: grid; gap: 22px; }
+.q { display: grid; gap: 10px; }
+.q h3 { font-family: var(--body); font-weight: 700; font-size: 1rem; }
+html[lang="ar"] .q h3 { font-family: var(--ar); }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: start; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; display: grid; gap: 2px; }
+.opt small { color: var(--muted); font-size: .75rem; }
+.opt[aria-pressed="true"] { border-color: var(--brass); background: var(--brass-ink); }
+.result { border: 1px solid var(--brass-2); border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: 150px 1fr; background: linear-gradient(135deg, #1b1712, #121213 70%); }
+@media (max-width: 520px) { .result { grid-template-columns: 1fr; } .result .portrait { height: 170px; } }
+.result .portrait { background: #0f0f10; display: grid; place-items: center; border-inline-end: 1px solid var(--line); }
+.result .portrait svg { width: 120px; height: 140px; }
+.result .body { padding: 18px; display: grid; gap: 10px; align-content: start; }
+.result h3 { font-size: 1.7rem; }
+.spec { display: flex; flex-wrap: wrap; gap: 6px; }
+.spec span { font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; border: 1px solid var(--line-2); border-radius: 999px; padding: 3px 9px; color: var(--muted); }
+
+/* ===== GIFTS ===== */
+.gift { aspect-ratio: 1.6; max-width: 100%; width: 100%; border-radius: 18px; padding: 20px; display: grid; grid-template-rows: auto 1fr auto; position: relative; overflow: hidden; box-shadow: 0 30px 60px -30px #000; }
+.gift.g-black { background: radial-gradient(120% 90% at 100% 0%, #26262a, #111113 60%); color: var(--fg); border: 1px solid #2f2f33; }
+.gift.g-gold { background: linear-gradient(135deg, #e6c98d, #b8904f 55%, #8c6a33); color: #1b150b; }
+.gift.g-eid { background: radial-gradient(100% 120% at 0% 0%, #1f3a35, #0e1c1a 70%); color: #f2e6c9; border: 1px solid #2b4a44; }
+.gift .g-top { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.gift .g-amt { font-family: var(--display); font-size: clamp(2rem, 9vw, 3rem); line-height: 1; align-self: center; }
+.gift .g-amt small { font-family: var(--body); font-size: .8rem; opacity: .7; display: block; margin-top: 6px; }
+.gift .g-msg { font-family: var(--display); font-style: italic; font-size: .95rem; opacity: .9; }
+.gift .g-foot { display: flex; justify-content: space-between; align-items: end; gap: 10px; font-size: .78rem; }
+.gift .g-code { font-family: var(--mono); letter-spacing: .1em; font-size: .78rem; }
+.gift img { width: 54px; height: 54px; }
+.gift.g-gold img { filter: invert(1) brightness(.2); }
+.gift .crescent { position: absolute; right: -30px; top: -30px; width: 140px; height: 140px; border-radius: 50%; box-shadow: -18px 14px 0 0 rgba(242,230,201,.12); }
+.gift-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.gift-form .full { grid-column: 1 / -1; }
+@media (max-width: 480px) { .gift-form { grid-template-columns: 1fr; } }
+
+/* ===== BARBER ===== */
+.room { display: grid; gap: 18px; }
+.client { border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; background: var(--panel); }
+.client-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.client-head h3 { font-size: 1.25rem; }
+.mini { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.mini i { aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--line-2); }
+.mini i.on { background: var(--fg); border-color: var(--fg); }
+.mini i.r { border-color: var(--brass-2); }
+.mini i.r.on { background: var(--brass); border-color: var(--brass); }
+.pill { font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--brass-2); color: var(--brass); justify-self: start; }
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: .84rem; color: var(--muted); }
+.log b { color: var(--fg); font-weight: 600; }
+.log time { font-family: var(--mono); font-size: .72rem; margin-inline-end: 8px; }
+.err { color: var(--bad); font-size: .85rem; min-height: 1.2em; }
+.wheel-wrap { position: relative; width: min(280px, 80vw); aspect-ratio: 1; max-width: 100%; margin: 0 auto; }
+.wheel { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--brass); transition: transform 4s cubic-bezier(.12,.75,.15,1); }
+.pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid var(--fg); z-index: 2; }
+.hub { position: absolute; inset: 38%; border-radius: 50%; background: var(--bg); border: 2px solid var(--brass); display: grid; place-items: center; }
+.hub img { width: 80%; }
+dialog { background: var(--panel-2); color: var(--fg); border: 1px solid var(--line-2); border-radius: 20px; padding: 22px; max-width: min(420px, calc(100vw - 32px)); width: 100%; }
+dialog::backdrop { background: rgba(0,0,0,.7); }
+
+.how { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: h; }
+.how li { counter-increment: h; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; font-size: 1rem; }
+.how li b { font-weight: 600; }
+.how li::before { content: counter(h); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--brass-2); color: var(--brass); font-family: var(--display); font-size: 1.2rem; }
+.toast { position: fixed; z-index: 40; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; transition: .3s; background: var(--fg); color: var(--bg); font-weight: 700; font-size: .88rem; padding: 10px 18px; border-radius: 999px; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+footer { padding-block: 28px 10px; color: var(--muted); font-size: .8rem; display: grid; gap: 6px; text-align: center; }
+footer a { color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="top gut">
+  <div class="inner">
+    <a class="brand" href="#home"><img src="img/logo.png" alt=""><b>Sameh &amp; Mazen</b></a>
+    <span class="spacer"></span>
+    <span class="status"><span class="dot"></span><span data-i18n="closes">Closes 12:01 AM</span></span>
+    <button class="lang" id="langBtn" type="button" aria-label="Switch language">عربي</button>
+  </div>
+</header>
+
+<main>
+<!-- ================= HOME ================= -->
+<div id="v-home" data-view>
+  <section class="hero gut">
+    <div class="hero-img" aria-hidden="true"></div>
+    <div class="inner">
+      <img class="seal" src="img/logo.png" alt="Sameh &amp; Mazen barber shop logo">
+      <h1><span data-i18n="heroA">Great haircuts.</span><br><em data-i18n="heroB">Free prizes.</em></h1>
+      <p class="lead" data-i18n="heroLead">Get 1 stamp every time you come. Your 10th haircut is free.</p>
+      <a class="rating" href="https://www.google.com/maps/search/?api=1&amp;query=Sameh%26mazen%20barber%20shop" target="_blank" rel="noopener"><span class="stars">★★★★★</span><b>5.0</b><span class="muted" data-i18n="ratingNote">on Google Maps · 4 reviews</span></a>
+      <div class="row">
+        <a class="btn gold" href="#book" data-i18n="bookChair">Book a chair</a>
+        <a class="btn ghost" href="#club" data-i18n="myCard">My stamp card</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="gut"><div class="inner">
+    <section class="section">
+      <p class="eyebrow" data-i18n="howEy">How it works</p>
+      <ol class="how">
+        <li><b data-i18n="how1">Scan the QR code in the shop.</b></li>
+        <li><b data-i18n="how2">Write your name and phone number. You get your own card.</b></li>
+        <li><b data-i18n="how3">After your haircut, show your card. The barber adds a stamp.</b></li>
+        <li><b data-i18n="how4">Collect stamps and win prizes. Your 10th haircut is free.</b></li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="freshEy">Haircut timer</p>
+      <h2 data-i18n-html="freshH">Is it time for a <em>new haircut</em>?</h2>
+      <div class="fresh">
+        <div class="fresh-top">
+          <label class="f" for="lastCut"><span data-i18n="lastCut">My last haircut was on</span><input type="date" id="lastCut"></label>
+          <div class="fresh-val"><span id="freshPct">0</span>%<small data-i18n="fresh">fresh</small></div>
+        </div>
+        <div class="meter"><canvas id="meter" width="700" height="108" aria-hidden="true"></canvas></div>
+        <div class="fresh-scale"><span data-i18n="day0">Day 0</span><span>7</span><span>14</span><span>21</span><span>28+</span></div>
+        <p><span class="verdict" id="verdict"></span> <span class="muted" id="verdictSub"></span></p>
+        <div class="row"><a class="btn gold" href="#book" id="freshBook" data-i18n="bookNow">Book my next haircut</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="insideEy">Inside the shop</p>
+      <div class="gallery">
+        <figure><img src="img/chair.jpg" alt="Barber chair in front of a gold-lit mirror"><figcaption data-i18n="cap1">The chair</figcaption></figure>
+        <figure><img src="img/fade.jpg" alt="Close-up of a skin fade"><figcaption data-i18n="cap2">The fade</figcaption></figure>
+        <figure><img src="img/inside.jpg" alt="The shop interior"><figcaption data-i18n="cap3">The shop</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="barbersEy">Our barbers</p>
+      <div class="duo">
+        <div class="barber"><div class="mono-init">S</div><h3>Sameh</h3><button class="ghost" type="button" data-pick-barber="Sameh" data-i18n="bookSameh">Book with Sameh</button></div>
+        <div class="barber"><div class="mono-init">M</div><h3>Mazen</h3><button class="ghost" type="button" data-pick-barber="Mazen" data-i18n="bookMazen">Book with Mazen</button></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="teaser">
+        <p class="eyebrow" data-i18n="clubEy">Stamp card</p>
+        <h2 data-i18n-html="clubTeaserH">Collect stamps. <em>Win prizes.</em></h2>
+        <p class="muted" data-i18n="clubTeaserP">Get 1 stamp every visit. Win prizes at 3, 5, 7 and 10 stamps. Only the barber can add stamps.</p>
+        <div class="row"><a class="btn" href="#club" data-i18n="openCard">See my card</a></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="findEy">Find us</p>
+      <div class="find">
+        <div><b data-i18n="hoursT">Hours</b><span class="muted small" data-i18n="hoursD">Open today, closes 12:01 AM</span></div>
+        <div><b data-i18n="whereT">Where</b><a class="small" href="https://www.google.com/maps/search/?api=1&amp;query=Sameh%26mazen%20barber%20shop" target="_blank" rel="noopener" data-i18n="directions">Get directions on Google Maps</a></div>
+        <div><b data-i18n="waT">WhatsApp</b><span class="muted small" id="waShow"></span></div>
+      </div>
+    </section>
+  </div></div>
+</div>
+
+<!-- ================= BOOK ================= -->
+<div id="v-book" data-view hidden>
+  <div class="gut"><div class="inner">
+    <section class="section">
+      <p class="eyebrow" data-i18n="bookEy">Book a chair</p>
+      <h2 data-i18n-html="bookH">Book in <em>3 easy steps</em>.</h2>
+
+      <div class="step">
+        <div class="step-h"><span class="step-n">1</span><h3 data-i18n="s1">Choose a service</h3></div>
+        <div class="menu" id="menu"></div>
+        <p class="note" data-i18n="priceNote">These prices are only examples.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-h"><span class="step-n">2</span><h3 data-i18n="s2">Choose a barber</h3></div>
+        <div class="chips" id="barberChips"></div>
+      </div>
+
+      <div class="step">
+        <div class="step-h"><span class="step-n">3</span><h3 data-i18n="s3">Choose a day and time</h3></div>
+        <div class="days" id="days"></div>
+        <div class="slots" id="slots"></div>
+      </div>
+
+      <div class="ticket" id="ticket">
+        <p class="eyebrow" data-i18n="ticketEy">Your booking</p>
+        <h3 id="tTitle">Sameh &amp; Mazen</h3>
+        <dl id="tList"></dl>
+        <hr>
+        <div class="msg" id="tMsg"></div>
+        <div class="row">
+          <a class="btn wa" id="waLink" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg><span data-i18n="openWa">Send on WhatsApp</span></a>
+          <button type="button" id="copyMsg" class="ghost" style="border-color:#bdb7ab;color:#141414;background:transparent" data-i18n="copyMsg">Copy message</button>
+        </div>
+        <p class="small" style="color:#6d6a64" data-i18n="ticketNote">Tap the green button. WhatsApp opens with your booking already written. Press send, and the barber replies to confirm.</p>
+      </div>
+    </section>
+  </div></div>
+</div>
+
+<!-- ================= CLUB ================= -->
+<div id="v-club" data-view hidden>
+  <div class="gut"><div class="inner">
+    <section class="section" id="joinBox">
+      <p class="eyebrow" data-i18n="joinEy">Get your free card</p>
+      <h2 data-i18n-html="joinH">Join in <em>10 seconds</em>.</h2>
+      <form id="joinForm" class="stack">
+        <label class="f" for="jName"><span data-i18n="jName">Your name</span><input id="jName" autocomplete="name" required maxlength="40"></label>
+        <label class="f" for="jPhone"><span data-i18n="jPhone">Your phone number</span><input id="jPhone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="01x xxxx xxxx"></label>
+        <label class="f" for="jBday"><span data-i18n="jBday">Your birthday (you can skip this)</span><input id="jBday" type="date"></label>
+        <label class="f" for="jFriend"><span data-i18n="jFriend">A friend's card code (you can skip this)</span><input id="jFriend" autocomplete="off" placeholder="OMAR-4821"></label>
+        <button class="gold" type="submit" id="joinBtn" data-i18n="joinBtn">Get my card</button>
+        <p class="err" id="joinErr"></p>
+        <p class="small muted" data-i18n="joinNote">Already have a card? Write the same phone number and you get your card back.</p>
+      </form>
+    </section>
+
+    <div id="clubCard" hidden>
+    <section class="section">
+      <p class="eyebrow" data-i18n="clubEy">Stamp card</p>
+      <article class="card" id="card" aria-label="Loyalty card">
+        <div class="card-top">
+          <div>
+            <h3 class="lc">LOYALTY <em>CARD</em></h3>
+            <p class="tagline" data-i18n="cardTag">Sameh &amp; Mazen · Free cut after 10 visits</p>
+          </div>
+          <img class="card-logo" src="img/logo.png" alt="">
+        </div>
+        <div class="who"><b id="cName"></b><span class="tierpill" id="cTier"></span></div>
+        <div class="stamps" id="stamps"></div>
+        <div class="ready" id="cReady" hidden></div>
+        <div class="progress"><span id="cNext"></span><div class="bar"><i id="cBar"></i></div></div>
+        <div class="qrbox">
+          <div class="qr" id="qr"></div>
+          <p><span class="code" id="cCode"></span><span data-i18n="qrNote">Show this code to the barber after your haircut. He adds your stamp.</span></p>
+        </div>
+      </article>
+
+      <div class="stats3">
+        <div class="stat"><b id="sLife">0</b><span data-i18n="sLife">total visits</span></div>
+        <div class="stat"><b><span class="flame">🔥</span> <span id="sStreak">0</span></b><span data-i18n="sStreak">visits in a row</span></div>
+        <div class="stat"><b id="sBadges">0</b><span data-i18n="sBadges">badges</span></div>
+      </div>
+      <p class="note" data-i18n="saveTip">Tip: add this website to your home screen. Your card will be one tap away.</p>
+      <div class="row"><button class="ghost" type="button" id="copyCardLink" data-i18n="copyCardLink">Copy my card link</button><button class="ghost" type="button" id="logoutCard" data-i18n="logoutCard">Not you?</button></div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="rewardsEy">Prizes</p>
+      <ol class="ladder" id="ladder"></ol>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="levelsEy">Levels</p>
+      <h2 data-i18n-html="levelsH">Come more, <em>get more</em>.</h2>
+      <div class="tierbar"><i id="tierFill"></i></div>
+      <div class="tiers" id="tiers"></div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="badgesEy">Badges you can win</p>
+      <div class="badges" id="badges"></div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow" data-i18n="extraEy">Extra stamps</p>
+      <h2 data-i18n-html="extraH">How to get <em>extra stamps</em>.</h2>
+      <div class="bonus" id="bonus"></div>
+      <div class="refer"><span class="small muted" data-i18n="yourCode">Your code for friends</span><code id="refCode"></code><button class="ghost" type="button" id="copyRef" data-i18n="copy">Copy</button></div>
+      <label class="f" for="bday"><span data-i18n="bdayL">Your birthday (you get a gift in your birthday month)</span><input type="date" id="bday"></label>
+    </section>
+    </div>
+  </div></div>
+</div>
+
+<!-- ================= STYLE ================= -->
+<div id="v-style" data-view hidden>
+  <div class="gut"><div class="inner">
+    <section class="section">
+      <p class="eyebrow" data-i18n="styleEy">Haircut finder</p>
+      <h2 data-i18n-html="styleH">Find the <em>best haircut</em> for you.</h2>
+      <div class="quiz" id="quiz"></div>
+      <div class="result" id="result" hidden>
+        <div class="portrait" id="portrait"></div>
+        <div class="body">
+          <p class="eyebrow" data-i18n="yourCut">Your haircut</p>
+          <h3 id="rName"></h3>
+          <p class="muted" id="rDesc"></p>
+          <div class="spec" id="rSpec"></div>
+          <p class="small" id="rAsk"></p>
+          <div class="row"><button class="gold" type="button" id="bookStyle" data-i18n="bookThis">Book this haircut</button></div>
+        </div>
+      </div>
+    </section>
+  </div></div>
+</div>
+
+<!-- ================= GIFTS ================= -->
+<div id="v-gifts" data-view hidden>
+  <div class="gut"><div class="inner">
+    <section class="section">
+      <p class="eyebrow" data-i18n="giftEy">Gift card</p>
+      <h2 data-i18n-html="giftH">Give a <em>free haircut</em> to a friend.</h2>
+      <div class="gift g-black" id="giftCard">
+        <div class="g-top"><img src="img/logo.png" alt=""><span class="g-code" id="gCode">GIFT-····</span></div>
+        <div class="g-amt" id="gAmt"></div>
+        <div class="g-foot"><div><div class="g-msg" id="gMsg"></div><div id="gFromTo"></div></div></div>
+      </div>
+      <div class="gift-form">
+        <div class="full"><span class="small muted" data-i18n="gWhat">Gift</span><div class="chips" id="gOpts"></div></div>
+        <div class="full"><span class="small muted" data-i18n="gDesign">Design</span><div class="chips" id="gDesigns"></div></div>
+        <label class="f" for="gTo"><span data-i18n="gTo">To</span><input id="gTo" value="Ahmed"></label>
+        <label class="f" for="gFrom"><span data-i18n="gFrom">From</span><input id="gFrom" value="Youssef"></label>
+        <label class="f full" for="gText"><span data-i18n="gText">Message</span><textarea id="gText">Look sharp for the big day.</textarea></label>
+      </div>
+      <div class="row"><button class="gold" type="button" id="gMake" data-i18n="gMake">Make gift code</button></div>
+      <p class="note" data-i18n="gNote">Pay at the shop. The barber turns on the code. Your friend shows the code when he comes.</p>
+    </section>
+    <section class="section">
+      <p class="eyebrow" data-i18n="redeemEy">Got a gift code?</p>
+      <h2 data-i18n-html="redeemH">Use your <em>gift</em></h2>
+      <div class="giftcheck">
+        <form id="gCheckForm" class="row">
+          <input id="gCheck" autocomplete="off" placeholder="GIFT-AB12" style="flex:1;min-width:150px" aria-label="Gift code">
+          <button class="gold" type="submit" data-i18n="gCheckBtn">Check my code</button>
+        </form>
+        <div class="gstate" id="gState" hidden></div>
+        <p class="small muted" data-i18n="redeemHow">Then come to the shop and show the code. The barber uses it, and your haircut is free.</p>
+      </div>
+    </section>
+  </div></div>
+</div>
+
+<!-- ================= BARBER ROOM ================= -->
+<div id="v-barber" data-view hidden>
+  <div class="gut"><div class="inner">
+    <section class="section" id="loginBox">
+      <p class="eyebrow" data-i18n="barberOnly">Barber page</p>
+      <h2 data-i18n-html="loginH">Barber <em>login</em></h2>
+      <form id="loginForm" class="stack">
+        <label class="f" for="lEmail"><span>Email</span><input id="lEmail" type="email" autocomplete="username" required></label>
+        <label class="f" for="lPass"><span>Password</span><input id="lPass" type="password" autocomplete="current-password" required></label>
+        <button type="submit">Log in</button>
+      </form>
+      <p class="err" id="loginErr"></p>
+    </section>
+
+    <div class="room" id="room" hidden>
+      <section class="section">
+        <p class="eyebrow" data-i18n="todayEy">Today</p>
+        <div class="stats3">
+          <div class="stat"><b id="tStamps">0</b><span data-i18n="tStamps">stamps today</span></div>
+          <div class="stat"><b id="tRewards">0</b><span data-i18n="tRewards">prizes today</span></div>
+          <div class="stat"><b id="tClients">0</b><span data-i18n="tClients">customers</span></div>
+        </div>
+      </section>
+      <section class="section">
+        <p class="eyebrow" data-i18n="scanEy">Find a customer</p>
+        <button class="gold" type="button" id="scanCam">Scan card with camera</button>
+        <div id="reader" hidden style="max-width:360px;width:100%;border-radius:14px;overflow:hidden"></div>
+        <form id="scanForm" class="row">
+          <input id="scan" autocomplete="off" placeholder="Code, name or phone" style="flex:1;min-width:160px" aria-label="Customer code, name or phone">
+          <button type="submit" data-i18n="find">Find</button>
+        </form>
+        <p class="err" id="scanErr"></p>
+        <div id="clients" class="stack"></div>
+      </section>
+      <section class="section">
+        <p class="eyebrow" data-i18n="giftsEy">Gift codes</p>
+        <form id="useGiftForm" class="row">
+          <input id="useGift" autocomplete="off" placeholder="GIFT-AB12" style="flex:1;min-width:150px" aria-label="Gift code to use">
+          <button type="submit" data-i18n="useGiftBtn">Use gift code</button>
+        </form>
+        <p class="err" id="useGiftMsg"></p>
+        <ul class="log" id="giftList"></ul>
+      </section>
+      <section class="section">
+        <p class="eyebrow" data-i18n="historyEy">History</p>
+        <ul class="log" id="log"></ul>
+        <div class="row"><button class="ghost" type="button" id="logoutBtn">Log out</button></div>
+      </section>
+    </div>
+  </div></div>
+</div>
+</main>
+
+<footer class="gut">
+  <span>Sameh &amp; Mazen · <span data-i18n="footer">Barber shop</span></span>
+  <a href="#barber" data-i18n="barberLink">Barber page</a>
+</footer>
+
+<nav class="tabs gut" aria-label="Sections">
+  <div class="inner" style="margin:0 auto">
+    <a href="#home" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-i18n="tHome">Home</span></a>
+    <a href="#book" data-tab="book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-i18n="tBook">Book</span></a>
+    <a href="#club" data-tab="club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><circle cx="8" cy="12" r="2"/><circle cx="13" cy="12" r="2"/><circle cx="18" cy="12" r="1.2"/></svg><span data-i18n="tClub">My card</span></a>
+    <a href="#style" data-tab="style"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16L20 3M16 16L4 3"/></svg><span data-i18n="tStyle">Haircuts</span></a>
+    <a href="#gifts" data-tab="gifts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="18" height="12" rx="1.5"/><path d="M3 13h18M12 9v12M12 9c-2-4-6-4-6-1.5S10 9 12 9zm0 0c2-4 6-4 6-1.5S14 9 12 9z"/></svg><span data-i18n="tGifts">Gifts</span></a>
+  </div>
+</nav>
+
+<dialog id="spinDlg">
+  <div class="stack" style="text-align:center">
+    <p class="eyebrow" data-i18n="spinEy">Visit 7 · Prize wheel</p>
+    <h3 id="spinWho"></h3>
+    <div class="wheel-wrap"><div class="pointer"></div><div class="wheel" id="wheel"></div><div class="hub"><img src="img/logo.png" alt=""></div></div>
+    <p id="spinOut" style="min-height:1.6em;font-weight:700;color:var(--brass)"></p>
+    <div class="row" style="justify-content:center"><button class="gold" type="button" id="spinGo" data-i18n="spin">Spin</button><button class="ghost" type="button" id="spinClose" data-i18n="done">Done</button></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+(function () {
+  /* ---------- shop settings: change these ---------- */
+  var CONFIG = {
+    whatsapp: "201017936378",  // shop WhatsApp: country code, no +
+    supabaseUrl: "https://vsottkpmkabfnrnmzxjw.supabase.co",       // Supabase → Project Settings → API → Project URL
+    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzb3R0a3Bta2FiZm5ybm16eGp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyMzU1MjYsImV4cCI6MjEwOTgxMTUyNn0.zQLto9GoTITeUOtoMnCbDSw-F1cPu0ug0WNwggevUq4",       // Supabase → Project Settings → API → anon public key
+    currency: "EGP"
+  };
+
+  /* ---------- translations ---------- */
+  var AR = {
+    closes: "يقفل ١٢:٠١ ص", heroA: "حلاقة ممتازة.", heroB: "وهدايا مجانية.", heroLead: "خد ختم كل مرة تيجي. والحلاقة العاشرة مجانًا.",
+    ratingNote: "على خرائط جوجل · ٤ تقييمات", bookChair: "احجز كرسي", myCard: "كارت الولاء",
+    freshEy: "عدّاد الحلاقة", freshH: "جه وقت <em>حلاقة جديدة</em>؟", lastCut: "آخر حلاقة كانت يوم", fresh: "فريش", day0: "يوم ٠", bookNow: "احجز الحلاقة الجاية",
+    insideEy: "جوّه المحل", cap1: "الكرسي", cap2: "الفيد", cap3: "المحل", barbersEy: "الحلاقين", bookSameh: "احجز مع سامح", bookMazen: "احجز مع مازن",
+    clubEy: "كارت الأختام", clubTeaserH: "جمّع أختام. <em>واكسب هدايا.</em>", clubTeaserP: "ختم كل زيارة، عجلة مفاجآت في الزيارة السابعة، حلاقة مجانية في العاشرة، ومستويات فضي وذهبي للزباين الدايمين. الحلاق بس هو اللي يختم، فمحدش يقدر يغش.",
+    openCard: "افتح كارتي", findEy: "مكانّا", hoursT: "المواعيد", hoursD: "فاتح النهارده، يقفل ١٢:٠١ ص", whereT: "العنوان", directions: "الاتجاهات على خرائط جوجل", waT: "واتساب",
+    bookEy: "احجز كرسي", bookH: "احجز في <em>٣ خطوات سهلة</em>.", s1: "اختار الخدمة", priceNote: "أسعار للتجربة. المحل هيحط الأسعار الحقيقية.", s2: "اختار الحلاق", s3: "اختار اليوم والساعة",
+    ticketEy: "حجزك", copyMsg: "انسخ الرسالة", openWa: "افتح واتساب", ticketNote: "دوس على الزرار الأخضر. واتساب هيفتح والحجز مكتوب. دوس إرسال والحلاق هيرد يأكد.",
+    cardTag: "سامح ومازن · حلاقة مجانية بعد ١٠ زيارات", qrNote: "ورّي الكود ده للحلاق بعد الحلاقة. هو بس اللي يقدر يختم.",
+    sLife: "زيارة إجمالي", sStreak: "سلسلة فريش", sBadges: "شارات", demoClub: "ده زبون تجريبي اسمه \"عمر\". افتح غرفة الحلاق (اللينك تحت) واختم الكارت وشوف بيتغير إزاي.",
+    rewardsEy: "مكافآت الكارت", levelsEy: "المستويات", levelsH: "الزبون الدايم <em>ليه أكتر</em>.", badgesEy: "الشارات", extraEy: "أختام زيادة", extraH: "طرق <em>تسبق بيها</em>.",
+    yourCode: "كود صاحبك", copy: "نسخ", bdayL: "عيد ميلادك (عشان هدية شهر ميلادك)",
+    styleEy: "اختار ستايلك", styleH: "مش عارف تطلب إيه؟ <em>تلات ضغطات.</em>", yourCut: "قصّتك", bookThis: "احجز القصّة دي",
+    giftEy: "هدية حلاقة", giftH: "اهدي <em>حلاقة مجانية</em> لصاحبك.", gWhat: "الهدية", gDesign: "التصميم", gTo: "إلى", gFrom: "من", gText: "الرسالة", gMake: "اعمل كود الهدية",
+    gNote: "بتدفع في المحل. الحلاق بيفعّل الكود، وصاحبك يورّيه في زيارته.",
+    barberOnly: "غرفة الحلاق", pinH: "اكتب <em>الرقم السري</em>", unlock: "افتح", pinNote: "الرقم التجريبي: 2580. الموقع الحقيقي هيبقى فيه تسجيل دخول للحلاق.",
+    todayEy: "النهارده", tStamps: "ختم", tRewards: "مكافأة اتوافق عليها", tClients: "عضو في النادي", scanEy: "مين على الكرسي؟", find: "دوّر",
+    giftsEy: "أكواد هدايا مستنية", historyEy: "السجل", lock: "اقفل", reset: "ابدأ التجربة من الأول",
+    footer: "صالون حلاقة", barberLink: "غرفة الحلاق", tHome: "الرئيسية", tBook: "احجز", tClub: "كارتي", tStyle: "ستايل", tGifts: "هدايا",
+    spinEy: "الزيارة ٧ · عجلة الهدايا", redeemEy: "معاك كود هدية؟", joinEy: "خد كارتك ببلاش", joinH: "اشترك في <em>١٠ ثواني</em>.", jName: "اسمك", jPhone: "رقم موبايلك", jBday: "عيد ميلادك (ممكن تسيبه)", jFriend: "كود كارت صاحبك (ممكن تسيبه)", joinBtn: "عايز كارتي", joinNote: "عندك كارت قبل كده؟ اكتب نفس الرقم وهيرجعلك كارتك.", saveTip: "نصيحة: ضيف الموقع ده على الشاشة الرئيسية لموبايلك، وكارتك هيبقى قدامك بضغطة.", copyCardLink: "انسخ لينك كارتي", logoutCard: "مش أنت؟", redeemH: "استخدم <em>هديتك</em>", gCheckBtn: "اتأكد من الكود", redeemHow: "بعدها تعالى المحل وورّي الكود. الحلاق يستخدمه وحلاقتك تبقى مجانًا.", openWa: "ابعت على واتساب", howEy: "إزاي بتشتغل", how1: "امسح الـ QR كود اللي في المحل.", how2: "اكتب اسمك ورقم موبايلك، وهتاخد كارت باسمك.", how3: "بعد الحلاقة، ورّي الكارت للحلاق وهو يحطلك ختم.", how4: "جمّع أختام واكسب هدايا. الحلاقة العاشرة مجانًا.", spin: "لفّ", done: "تمام"
+  };
+  var EN = {};
+  var lang = "en";
+  try { lang = localStorage.getItem("sm-lang") || "en"; } catch (e) {}
+  function T(en, ar) { return lang === "ar" ? ar : en; }
+
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.getElementById("langBtn").textContent = lang === "ar" ? "English" : "عربي";
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var k = el.getAttribute("data-i18n");
+      if (!(k in EN)) EN[k] = el.textContent;
+      el.textContent = lang === "ar" && AR[k] ? AR[k] : EN[k];
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+      var k = el.getAttribute("data-i18n-html");
+      if (!(k in EN)) EN[k] = el.innerHTML;
+      el.innerHTML = lang === "ar" && AR[k] ? AR[k] : EN[k];
+    });
+  }
+  document.getElementById("langBtn").addEventListener("click", function () {
+    lang = lang === "ar" ? "en" : "ar";
+    try { localStorage.setItem("sm-lang", lang); } catch (e) {}
+    applyLang(); renderAll();
+  });
+
+  /* ---------- helpers ---------- */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+  function iso(d) { var z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); }
+  function today() { return iso(new Date()); }
+  function daysBetween(a, b) { return Math.round((new Date(b + "T12:00") - new Date(a + "T12:00")) / 86400000); }
+  function nowT() { return new Date().toTimeString().slice(0, 5); }
+  var toastT;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 2200); }
+  function copy(text, okMsg) {
+    var done = function () { toast(okMsg || T("Copied", "اتنسخ")); };
+    try { navigator.clipboard.writeText(text).then(done, function () { toast(T("Select the text and copy it", "حدد النص وانسخه")); }); }
+    catch (e) { toast(T("Select the text and copy it", "حدد النص وانسخه")); }
+  }
+
+  /* ---------- data ---------- */
+  var TOTAL = 10;
+  var REWARDS = {
+    3: { en: "Free hot towel finish", ar: "فوطة ساخنة مجانًا", den: "A small gift after your 3rd visit.", dar: "مكسب صغير بدري، وتكلفته على المحل تقريبًا صفر." },
+    5: { en: "50% off your next cut", ar: "خصم ٥٠٪ على الحلاقة الجاية", den: "Or a free beard trim. You choose.", dar: "أو تهذيب دقن مجانًا. أنت تختار." },
+    7: { en: "Spin the prize wheel", ar: "لفّ عجلة الموس", den: "The barber spins it in the shop. You always win something.", dar: "الحلاق بيلفّها في المحل. كل خانة فيها هدية." },
+    10: { en: "Free haircut + beard", ar: "حلاقة + دقن مجانًا", den: "The big prize. Then your card starts again.", dar: "الجايزة الكبيرة. وبعدها الكارت يبدأ من جديد ومستواك يعلى." }
+  };
+  var WHEEL = [
+    { en: "Free eyebrow shaping", ar: "تحديد حواجب مجانًا", c: "#d0ad6b" },
+    { en: "Double stamp next visit", ar: "ختمين في الزيارة الجاية", c: "#1c1c1f" },
+    { en: "Free hair wax", ar: "واكس شعر مجانًا", c: "#efece5" },
+    { en: "Free hot towel shave", ar: "حلاقة دقن بفوطة ساخنة", c: "#1c1c1f" },
+    { en: "20% off next cut", ar: "خصم ٢٠٪ على الجاية", c: "#d0ad6b" },
+    { en: "Free beard oil sample", ar: "عينة زيت دقن مجانًا", c: "#1c1c1f" }
+  ];
+  var TIERS = [
+    { id: "bronze", en: "Bronze", ar: "برونزي", min: 0, color: "#c08a5b", pen: "Stamps, the prize wheel and a free 10th haircut.", par: "أختام، وعجلة الموس، والحلاقة العاشرة مجانًا." },
+    { id: "silver", en: "Silver", ar: "فضي", min: 10, color: "#c4c7ce", pen: "Book first before Eid and weddings. Free drink every visit.", par: "تحجز قبل الكل في العيد والأفراح، ومشروب مجاني كل زيارة." },
+    { id: "gold", en: "Gold", ar: "ذهبي", min: 25, color: "#d0ad6b", pen: "Free hot towel every visit, your name on the shop wall, and a yearly gift.", par: "فوطة ساخنة كل زيارة، اسمك على حيطة الزباين الدايمين، وهدية في ذكرى أول زيارة ليك." }
+  ];
+  var BADGES = [
+    { id: "first", en: "First chair", ar: "أول كرسي", den: "Your first visit", dar: "أول زيارة", icon: "chair" },
+    { id: "streak", en: "Regular", ar: "زبون دايم", den: "3 visits in a row, each less than 3 weeks apart", dar: "٣ زيارات ورا بعض في أقل من ٣ أسابيع", icon: "flame" },
+    { id: "weekday", en: "Quiet day visit", ar: "بطل نص الأسبوع", den: "A haircut on Tuesday or Wednesday", dar: "حلاقة في يوم هادي", icon: "sun" },
+    { id: "brother", en: "Brought a friend", ar: "جبت صاحبك", den: "A friend came with your code", dar: "صاحبك جه بالكود بتاعك", icon: "two" },
+    { id: "bday", en: "Birthday haircut", ar: "حلاقة عيد الميلاد", den: "A haircut in your birthday month", dar: "حلاقة في شهر ميلادك", icon: "cake" },
+    { id: "eid", en: "Eid ready", ar: "جاهز للعيد", den: "A haircut in the week before Eid", dar: "حلاقة في الأسبوع اللي قبل العيد", icon: "moon" },
+    { id: "wheel", en: "Wheel winner", ar: "كسبت العجلة", den: "Spun the prize wheel", dar: "لفّيت عجلة الموس", icon: "wheel" },
+    { id: "gold", en: "Gold member", ar: "الكرسي الذهبي", den: "25 visits", dar: "٢٥ زيارة", icon: "crown" }
+  ];
+  var ICONS = {
+    chair: '<path d="M14 10h12v10H14zM12 20h16v4H12zM16 24v8M24 24v8M13 32h14"/>',
+    flame: '<path d="M20 34c-6 0-9-4-9-9 0-6 6-9 6-15 3 2 5 5 5 8 1-2 2-3 2-5 3 3 5 7 5 12 0 5-3 9-9 9z"/>',
+    sun: '<circle cx="20" cy="20" r="6"/><path d="M20 6v4M20 30v4M6 20h4M30 20h4M10 10l3 3M27 27l3 3M30 10l-3 3M13 27l-3 3"/>',
+    two: '<circle cx="15" cy="14" r="4"/><circle cx="26" cy="14" r="4"/><path d="M8 31c0-5 3-9 7-9s7 4 7 9M19 31c0-5 3-9 7-9s7 4 7 9"/>',
+    cake: '<path d="M9 32h22V21H9zM9 26c3 2 5 2 7 0s4-2 7 0 5 2 8 0M20 21v-6M20 11v1"/>',
+    moon: '<path d="M26 30a11 11 0 1 1 0-20 9 9 0 0 0 0 20z"/><path d="M29 14l1 2 2 .5-2 .5-1 2-1-2-2-.5 2-.5z"/>',
+    wheel: '<circle cx="20" cy="20" r="12"/><path d="M20 8v24M8 20h24M11.5 11.5l17 17M28.5 11.5l-17 17"/>',
+    crown: '<path d="M8 28h24l2-14-7 5-7-9-7 9-7-5z"/><path d="M8 32h24"/>'
+  };
+  var SERVICES = [
+    { id: "cut", en: "Haircut", ar: "حلاقة شعر", den: "Cut, wash and style", dar: "قص وغسيل وتسريح", p: 150, m: 40 },
+    { id: "fade", en: "Skin fade", ar: "سكين فيد", den: "Clean fade down to the skin", dar: "فيد ناعم لحد الجلد", p: 180, m: 45 },
+    { id: "beard", en: "Beard trim", ar: "تهذيب وتحديد دقن", den: "Shape the beard, clean edges, hot towel", dar: "تشكيل وتحديد وفوطة ساخنة", p: 80, m: 20 },
+    { id: "combo", en: "Cut + beard", ar: "شعر + دقن", den: "The full refresh", dar: "التجديد الكامل", p: 210, m: 60 },
+    { id: "kids", en: "Kids cut", ar: "حلاقة أطفال", den: "Under 12. Counts on the parent's card", dar: "تحت ١٢ سنة، وبتتحسب على كارت الأب", p: 100, m: 30 },
+    { id: "groom", en: "Groom package", ar: "باكدج العريس", den: "Cut, beard, facial and steam before the big day", dar: "شعر ودقن وماسك وبخار قبل اليوم الكبير", p: 600, m: 90 }
+  ];
+
+  var KEY = "sm-local";
+  var S = {};
+  try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  var db = (CONFIG.supabaseUrl && CONFIG.supabaseKey && window.supabase) ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey) : null;
+  function tierOf(c) { var t = TIERS[0]; TIERS.forEach(function (x) { if (c.lifetime >= x.min) t = x; }); return t; }
+  function pending(c) {
+    var out = [];
+    [3, 5, 7, 10].forEach(function (n) { if (c.stamps >= n && c.used.indexOf(n) < 0) out.push(n); });
+    return out;
+  }
+
+  /* ================= HOME: fresh-o-meter ================= */
+  var lastCut = $("lastCut");
+  var d0 = new Date(); d0.setDate(d0.getDate() - 12);
+  lastCut.value = S.lastCut || iso(d0);
+  lastCut.max = today();
+  lastCut.addEventListener("change", function () { S.lastCut = lastCut.value; save(); drawFresh(); });
+
+  function drawFresh() {
+    var days = Math.max(0, daysBetween(lastCut.value || today(), today()));
+    var pct = Math.max(0, Math.round(100 - days / 28 * 100));
+    $("freshPct").textContent = pct;
+    var v, sub;
+    if (days <= 6) { v = T("Just cut. Looking good.", "لسه حالق. شكلك حلو."); sub = T("Come back in 2 or 3 weeks.", "استمتع. نشوفك بعد أسبوعين لتلاتة."); }
+    else if (days <= 13) { v = T("Still looks good.", "لسه شكلها حلو."); sub = T("You can book now for next week.", "الفيد بدأ يخف. احجز من دلوقتي للأسبوع الجاي."); }
+    else if (days <= 20) { v = T("Time for a haircut soon.", "قرّب وقت الحلاقة."); sub = T("This is the best time to book.", "ده أحسن وقت تحجز. ارجع قبل ٣ أسابيع عشان سلسلتك متقطعش."); }
+    else { v = T("You need a haircut!", "محتاج حلاقة!"); sub = T("Book today. We have a chair for you.", "سلسلتك في خطر. فيه كرسي مستنيك."); }
+    $("verdict").textContent = v; $("verdictSub").textContent = sub;
+    paintMeter(Math.min(days, 28) / 28);
+  }
+  function paintMeter(f) {
+    var c = $("meter"), g = c.getContext("2d"), W = c.width, H = c.height;
+    g.clearRect(0, 0, W, H);
+    // grass of hair: strands grow taller as days pass
+    var n = 120;
+    for (var i = 0; i < n; i++) {
+      var x = (i + .5) * W / n;
+      var pos = i / n;
+      var grown = pos <= f ? 1 : 0.25;
+      var h = H * (0.12 + 0.75 * f * (0.7 + 0.3 * Math.sin(i * 1.7))) * grown;
+      g.strokeStyle = pos <= f ? (f > .7 ? "#e3a36b" : "#d0ad6b") : "#2c2c30";
+      g.lineWidth = 2.2;
+      g.beginPath(); g.moveTo(x, H); g.quadraticCurveTo(x + 3 * Math.sin(i), H - h / 2, x + 5 * Math.sin(i * .7), H - Math.max(h, 6)); g.stroke();
+    }
+    g.fillStyle = "#efece5"; g.fillRect(f * W - 1, 0, 2, H);
+  }
+
+  /* ================= BOOK ================= */
+  var B = { svc: "combo", barber: "any", day: today(), slot: "" };
+  function busy(day, slot) { var h = 0; var s = day + slot + B.barber; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h % 4 === 0; }
+  function renderBook() {
+    var menu = $("menu"); menu.innerHTML = "";
+    SERVICES.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "svc"; b.setAttribute("aria-pressed", B.svc === s.id);
+      b.innerHTML = "<b></b><span class='price'></span><span class='d'></span>";
+      b.querySelector("b").textContent = T(s.en, s.ar);
+      b.querySelector(".price").textContent = s.p + " " + CONFIG.currency;
+      b.querySelector(".d").textContent = T(s.den, s.dar) + " · " + s.m + T(" min", " دقيقة");
+      b.onclick = function () { B.svc = s.id; renderBook(); };
+      menu.appendChild(b);
+    });
+    var bc = $("barberChips"); bc.innerHTML = "";
+    [["any", T("Whoever's free", "أي حد فاضي")], ["Sameh", T("Sameh", "سامح")], ["Mazen", T("Mazen", "مازن")]].forEach(function (o) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = o[1];
+      b.setAttribute("aria-pressed", B.barber === o[0]);
+      b.onclick = function () { B.barber = o[0]; B.slot = ""; renderBook(); };
+      bc.appendChild(b);
+    });
+    var days = $("days"); days.innerHTML = "";
+    var loc = lang === "ar" ? "ar-EG" : "en-GB";
+    for (var i = 0; i < 10; i++) {
+      var d = new Date(); d.setDate(d.getDate() + i);
+      var id = iso(d);
+      var b = document.createElement("button"); b.type = "button"; b.className = "day";
+      b.setAttribute("aria-pressed", B.day === id);
+      b.innerHTML = "<small></small><b></b><small></small>";
+      b.children[0].textContent = i === 0 ? T("Today", "النهارده") : d.toLocaleDateString(loc, { weekday: "short" });
+      b.children[1].textContent = d.getDate();
+      b.children[2].textContent = d.toLocaleDateString(loc, { month: "short" });
+      (function (id) { b.onclick = function () { B.day = id; B.slot = ""; renderBook(); }; })(id);
+      days.appendChild(b);
+    }
+    var slots = $("slots"); slots.innerHTML = "";
+    var nowH = new Date().getHours() + new Date().getMinutes() / 60;
+    for (var h = 12; h <= 23.5; h += 0.5) {
+      var hh = Math.floor(h), mm = h % 1 ? "30" : "00";
+      var label = (hh > 12 ? hh - 12 : hh) + ":" + mm + (hh >= 12 ? " PM" : " AM");
+      var past = B.day === today() && h <= nowH;
+      var b = document.createElement("button"); b.type = "button"; b.className = "slot"; b.textContent = label;
+      var isBusy = past || busy(B.day, label);
+      if (isBusy) { b.classList.add("busy"); b.disabled = true; b.setAttribute("aria-label", label + " taken"); }
+      b.setAttribute("aria-pressed", B.slot === label);
+      (function (label) { b.onclick = function () { B.slot = label; renderBook(); }; })(label);
+      slots.appendChild(b);
+    }
+    renderTicket();
+  }
+  function renderTicket() {
+    var s = SERVICES.filter(function (x) { return x.id === B.svc; })[0];
+    var d = new Date(B.day + "T12:00");
+    var dayTxt = d.toLocaleDateString(lang === "ar" ? "ar-EG" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
+    var barberTxt = B.barber === "any" ? T("Whoever's free", "أي حد فاضي") : T(B.barber, B.barber === "Sameh" ? "سامح" : "مازن");
+    var rows = [[T("Service", "الخدمة"), T(s.en, s.ar)], [T("Barber", "الحلاق"), barberTxt], [T("Day", "اليوم"), dayTxt], [T("Time", "الساعة"), B.slot || T("Pick a time above", "اختار ساعة من فوق")], [T("Price", "السعر"), s.p + " " + CONFIG.currency]];
+    $("tList").innerHTML = rows.map(function (r) { return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("");
+    var code = ME ? ME.code : "";
+    var msg = T("Hi Sameh & Mazen! I'd like to book:\n", "أهلاً سامح ومازن! عايز أحجز:\n") +
+      "• " + T(s.en, s.ar) + "\n• " + barberTxt + "\n• " + dayTxt + (B.slot ? " · " + B.slot : "") + "\n" +
+      (code ? T("My card: ", "كارتي: ") + code : "");
+    $("tMsg").textContent = msg;
+    var wa = $("waLink");
+    if (CONFIG.whatsapp) { wa.href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(msg); wa.hidden = false; wa.setAttribute("aria-disabled", B.slot ? "false" : "true"); }
+    else wa.hidden = true;
+    $("copyMsg").disabled = !B.slot;
+  }
+  $("copyMsg").addEventListener("click", function () { copy($("tMsg").textContent, T("Message copied. Paste it in WhatsApp.", "الرسالة اتنسخت. الصقها في واتساب.")); });
+  document.querySelectorAll("[data-pick-barber]").forEach(function (b) {
+    b.addEventListener("click", function () { B.barber = b.getAttribute("data-pick-barber"); B.slot = ""; renderBook(); location.hash = "#book"; });
+  });
+
+  /* ================= STYLE ================= */
+  var Q = [
+    { k: "length", en: "How short do you want your hair?", ar: "عايز تسيب شعرك قد إيه؟", o: [["short", "Very short", "قصير جدًا", "Easy and clean", "نضيف وسهل"], ["mid", "Medium", "متوسط", "A little long on top", "شوية طول فوق"], ["long", "Long on top", "طويل فوق", "Long hair on top", "مساحة للتسريح"]] },
+    { k: "effort", en: "How much time do you spend on your hair each morning?", ar: "بتقضي قد إيه على شعرك الصبح؟", o: [["zero", "No time", "ولا دقيقة", "I just go", "تصحى وتنزل"], ["some", "2 minutes", "دقيقتين", "A little wax", "شوية واكس"], ["lots", "A lot of time", "اللي يلزم", "I like doing my hair", "بحب أسرّح"]] },
+    { k: "vibe", en: "What style do you like?", ar: "إيه الطابع؟", o: [["clean", "Classic", "كلاسيك ونضيف", "For work and weddings", "شغل وأفراح"], ["sharp", "Modern", "حاد وعصري", "Fades and lines", "فيد وخطوط"], ["bold", "Bold", "جريء", "People will notice", "يلفت النظر"]] }
+  ];
+  var CUTS = {
+    buzz: { en: "Buzz cut", ar: "بَز كَت مع تحديد حاد", den: "Very short everywhere. No work in the morning. Always looks clean.", dar: "قصير على الآخر مع حدود حادة. مفيش أي مجهود، ودايمًا نضيف.", spec: ["#2 all over", "Line-up", "Every 2 weeks"], specAr: ["درجة ٢", "تحديد", "كل أسبوعين"], ask: "Tell the barber: number 2 everywhere, with clean edges.", askAr: "اطلب: درجة ٢ على كله مع تحديد حاد.", svc: "cut", top: 2 },
+    crop: { en: "Textured crop", ar: "كروب مموّج", den: "Short on the sides, a little longer on top. Easy and modern. Use a little wax.", dar: "جناب قصيرة وقُصّة مموّجة فوق. سهلة وعصرية، شوية واكس وخلاص.", spec: ["Mid fade", "Textured top", "Every 3 weeks"], specAr: ["ميد فيد", "فوق مموّج", "كل ٣ أسابيع"], ask: "Tell the barber: a mid skin fade with a textured crop on top.", askAr: "اطلب: ميد سكين فيد مع كروب مموّج فوق.", svc: "fade", top: 5 },
+    sidepart: { en: "Classic side part", ar: "فرق جانبي كلاسيك", den: "Short sides and a line on one side. Good for work and weddings.", dar: "جناب متدرجة وفرق نضيف. ينفع في الشغل وفي الأفراح.", spec: ["Taper", "Hard part", "Every 3 weeks"], specAr: ["تيبر", "فرق محدد", "كل ٣ أسابيع"], ask: "Tell the barber: a low taper with a hard side part.", askAr: "اطلب: لو تيبر مع فرق جانبي محدد.", svc: "cut", top: 7 },
+    fade: { en: "High skin fade", ar: "هاي سكين فيد", den: "Very short sides and longer hair on top. Clean lines. Looks strong.", dar: "جناب على الجلد بتدرّج لطول فوق. خطوط حادة وحضور قوي.", spec: ["High fade", "Design line", "Every 2 weeks"], specAr: ["هاي فيد", "خط ديزاين", "كل أسبوعين"], ask: "Tell the barber: a high skin fade with a line design.", askAr: "اطلب: هاي سكين فيد مع خط ديزاين.", svc: "fade", top: 6 },
+    quiff: { en: "Modern quiff", ar: "كويف عصري", den: "Hair on top goes up and back. Needs a few minutes each morning.", dar: "حجم مرفوع لفوق ولورا. بياخد كام دقيقة بس بيلفت النظر.", spec: ["Low fade", "Long top", "Every 3–4 weeks"], specAr: ["لو فيد", "فوق طويل", "كل ٣-٤ أسابيع"], ask: "Tell the barber: a low fade, keep the length on top for a quiff.", askAr: "اطلب: لو فيد وسيب الطول فوق عشان الكويف.", svc: "fade", top: 11 },
+    curls: { en: "Curly top with a taper", ar: "كيرلي فوق مع تيبر", den: "Keep your curls on top. Short and neat on the sides.", dar: "سيب الكيرلي فوق وخلّي الجناب نضيفة. جريء من غير مجهود.", spec: ["Taper", "Curls on top", "Every 3 weeks"], specAr: ["تيبر", "كيرلي فوق", "كل ٣ أسابيع"], ask: "Tell the barber: a taper fade, keep the curls on top, shape the edges.", askAr: "اطلب: تيبر فيد، سيب الكيرلي فوق وحدد الأطراف.", svc: "cut", top: 9 }
+  };
+  var A = {};
+  function pickCut() {
+    if (A.length === "short") return A.vibe === "bold" ? "fade" : "buzz";
+    if (A.length === "mid") return A.vibe === "clean" ? "sidepart" : (A.vibe === "bold" ? "fade" : "crop");
+    if (A.length === "long") return A.effort === "zero" ? "curls" : (A.vibe === "clean" ? "sidepart" : "quiff");
+    return "crop";
+  }
+  function headSvg(top) {
+    // simple head silhouette with hair height = top
+    var hair = 'M30 ' + (62 - top) + ' Q60 ' + (40 - top * 2) + ' 90 ' + (62 - top) + ' L92 72 Q60 60 28 72 Z';
+    return '<svg viewBox="0 0 120 140" fill="none" stroke-linecap="round">' +
+      '<path d="M32 70 Q30 110 60 120 Q90 110 88 70 Q88 40 60 38 Q32 40 32 70Z" fill="#26262a" stroke="#3d3d42"/>' +
+      '<path d="' + hair + '" fill="#d0ad6b"/>' +
+      '<path d="M30 74 L30 92 M90 74 L90 92" stroke="#d0ad6b" stroke-width="2" stroke-dasharray="2 3"/>' +
+      '<path d="M44 120 Q60 132 76 120 L80 140 L40 140Z" fill="#1c1c1f"/></svg>';
+  }
+  function renderQuiz() {
+    var qz = $("quiz"); qz.innerHTML = "";
+    Q.forEach(function (q) {
+      var w = document.createElement("div"); w.className = "q";
+      w.innerHTML = "<h3></h3><div class='opts'></div>";
+      w.querySelector("h3").textContent = T(q.en, q.ar);
+      q.o.forEach(function (o) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt";
+        b.setAttribute("aria-pressed", A[q.k] === o[0]);
+        b.innerHTML = "<b></b><small></small>";
+        b.querySelector("b").textContent = T(o[1], o[2]);
+        b.querySelector("small").textContent = T(o[3], o[4]);
+        b.onclick = function () { A[q.k] = o[0]; renderQuiz(); };
+        w.querySelector(".opts").appendChild(b);
+      });
+      qz.appendChild(w);
+    });
+    var done = A.length && A.effort && A.vibe;
+    $("result").hidden = !done;
+    if (done) {
+      var c = CUTS[pickCut()];
+      $("rName").textContent = T(c.en, c.ar);
+      $("rDesc").textContent = T(c.den, c.dar);
+      $("rSpec").innerHTML = (lang === "ar" ? c.specAr : c.spec).map(function (s) { return "<span>" + esc(s) + "</span>"; }).join("");
+      $("rAsk").textContent = T(c.ask, c.askAr);
+      $("portrait").innerHTML = headSvg(c.top);
+      $("bookStyle").onclick = function () { B.svc = c.svc; location.hash = "#book"; };
+    }
+  }
+  A = { length: "mid", effort: "some", vibe: "sharp" };
+
+  /* ================= CLUB (real) ================= */
+  var scissors = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16 L20 3 M16 16 L4 3"/></svg>';
+  var star = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7.1L12 17.3 5.8 21l1.6-7.1L2 9.2l7.1-.6z"/></svg>';
+  var stampsEl = $("stamps");
+  for (var i = 1; i <= TOTAL; i++) {
+    var d = document.createElement("div");
+    d.className = "stamp" + (REWARDS[i] ? " reward" : "");
+    d.innerHTML = (REWARDS[i] ? star : scissors) + '<span class="n">' + i + "</span>";
+    stampsEl.appendChild(d);
+  }
+  var prevStamps = null, qrFor = null;
+  function badgeSvg(icon, color) { return '<svg viewBox="0 0 40 40" fill="none" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[icon] + "</svg>"; }
+
+  // the customer's own card link: ?c=TOKEN (also remembered on this phone)
+  var TOKEN = null, ME = null, meLoading = false;
+  (function () {
+    var m = location.search.match(/[?&]c=([A-Z0-9]+)/);
+    if (m) { TOKEN = m[1]; try { localStorage.setItem("sm-token", TOKEN); } catch (e) {} }
+    else { try { TOKEN = localStorage.getItem("sm-token"); } catch (e) {} }
+  })();
+  function cardLink() { return location.origin + location.pathname + "?c=" + TOKEN + "#club"; }
+  async function loadMe() {
+    if (!TOKEN || !db) return;
+    meLoading = true;
+    var r = await db.rpc("get_card", { p_token: TOKEN });
+    meLoading = false;
+    if (r.error) { toast(T("Can't reach the shop right now. Check your internet.", "مش قادرين نوصل للمحل دلوقتي. اتأكد من النت.")); return; }
+    ME = r.data;
+    if (!ME) { TOKEN = null; try { localStorage.removeItem("sm-token"); } catch (e) {} }
+    if (ME && ME.last_visit) { lastCut.value = ME.last_visit; drawFresh(); }
+    renderClub(); renderTicket();
+  }
+
+  $("joinForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var err = $("joinErr"); err.textContent = "";
+    if (!db) { err.textContent = T("The shop's database is not connected yet.", "قاعدة البيانات لسه مش متوصلة."); return; }
+    var btn = $("joinBtn"); btn.disabled = true;
+    var friend = $("jFriend").value.trim();
+    var r = await db.rpc("join_club", { p_name: $("jName").value, p_phone: $("jPhone").value, p_birthday: $("jBday").value || null, p_friend: friend || null });
+    btn.disabled = false;
+    if (r.error) { err.textContent = r.error.message; return; }
+    TOKEN = r.data.token;
+    try { localStorage.setItem("sm-token", TOKEN); } catch (x) {}
+    history.replaceState(null, "", "?c=" + TOKEN + "#club");
+    toast(r.data.existing ? T("Welcome back! Here is your card.", "أهلاً بيك تاني! ده كارتك.") : T("Welcome! Your card is ready.", "أهلاً بيك! كارتك جاهز."));
+    await loadMe();
+  });
+  $("logoutCard").addEventListener("click", function () {
+    TOKEN = null; ME = null; try { localStorage.removeItem("sm-token"); } catch (e) {}
+    history.replaceState(null, "", location.pathname + "#club"); renderClub();
+  });
+  $("copyCardLink").addEventListener("click", function () { copy(cardLink(), T("Card link copied. Keep it safe.", "لينك الكارت اتنسخ.")); });
+
+  function renderClub() {
+    var has = !!ME;
+    $("joinBox").hidden = has || meLoading;
+    $("clubCard").hidden = !has;
+    if (!has) return;
+    var c = ME;
+    var t = tierOf(c);
+    $("card").className = "card tier-" + t.id;
+    $("cName").textContent = c.name;
+    var tp = $("cTier"); tp.className = "tierpill " + t.id; tp.textContent = T(t.en, t.ar);
+    var kids = stampsEl.children;
+    for (var i = 0; i < kids.length; i++) { kids[i].classList.toggle("done", i < c.stamps); kids[i].setAttribute("aria-label", T("Visit ", "زيارة ") + (i + 1) + (i < c.stamps ? " ✓" : "")); }
+    if (prevStamps !== null && c.stamps > prevStamps) { var k = kids[c.stamps - 1]; k.classList.remove("pop"); void k.offsetWidth; k.classList.add("pop"); }
+    prevStamps = c.stamps;
+    var next = [3, 5, 7, 10].filter(function (n) { return n > c.stamps; })[0];
+    $("cNext").textContent = next ? (next - c.stamps) + T(" more stamp" + (next - c.stamps > 1 ? "s" : "") + " for: ", " ختم وتاخد: ") + T(REWARDS[next].en, REWARDS[next].ar) : T("Card full! Ask for your free haircut.", "الكارت كمل! اطلب حلاقتك المجانية.");
+    $("cBar").style.width = (c.stamps / TOTAL * 100) + "%";
+    var p = pending(c), r = $("cReady");
+    if (c.pending_wheel) { r.hidden = false; r.innerHTML = "<b>" + esc(T("Prize wheel ready.", "عجلة الهدايا جاهزة.")) + "</b> " + esc(T("The barber will spin it on your next visit.", "الحلاق هيلفّها في زيارتك الجاية.")); }
+    else if (c.wheel_prize) { r.hidden = false; r.innerHTML = "<b>" + esc(T("You won: ", "كسبت: ")) + esc(c.wheel_prize) + ".</b> " + esc(T("The barber will give it to you next visit.", "الحلاق هيديهولك في الزيارة الجاية.")); }
+    else if (p.length) { r.hidden = false; r.innerHTML = "<b>" + esc(T("Prize ready: ", "هدية جاهزة: ")) + esc(T(REWARDS[p[0]].en, REWARDS[p[0]].ar)) + ".</b> " + esc(T("Ask the barber to give it to you.", "اطلب من الحلاق يديهالك.")); }
+    else r.hidden = true;
+    $("cCode").textContent = c.code;
+    if (qrFor !== c.code) {
+      var q = $("qr"); q.innerHTML = "";
+      if (window.QRCode) { try { new QRCode(q, { text: c.code, width: 80, height: 80, correctLevel: QRCode.CorrectLevel.M }); qrFor = c.code; } catch (e) { q.textContent = c.code; } }
+      else q.textContent = "QR";
+    }
+    $("sLife").textContent = c.lifetime;
+    $("sStreak").textContent = c.streak;
+    $("sBadges").textContent = c.badges.length;
+    $("ladder").innerHTML = [3, 5, 7, 10].map(function (n) {
+      var R = REWARDS[n], got = c.used.indexOf(n) >= 0;
+      return '<li class="' + (got ? "got" : "") + '"><div class="visit">' + n + "<small>" + esc(T("STAMPS", "أختام")) + "</small></div><div><h3>" + esc(T(R.en, R.ar)) + (got ? " ✓" : "") + "</h3><p>" + esc(T(R.den, R.dar)) + "</p></div></li>";
+    }).join("");
+    $("tierFill").style.width = Math.min(100, c.lifetime / 30 * 100) + "%";
+    $("tiers").innerHTML = TIERS.map(function (x) {
+      var on = x.id === t.id;
+      var need = x.min > c.lifetime ? " · " + (x.min - c.lifetime) + T(" more visits", " زيارة كمان") : "";
+      return '<div class="tier' + (on ? " on" : "") + '"><div class="medal" style="border:1.5px solid ' + x.color + ";color:" + x.color + '">' + x.min + "+</div><div><h3>" + esc(T(x.en, x.ar)) + (on ? ' <span class="small muted">· ' + esc(T("you are here", "أنت هنا")) + "</span>" : "") + "</h3><p>" + esc(T(x.pen, x.par)) + esc(need) + "</p></div></div>";
+    }).join("");
+    $("badges").innerHTML = BADGES.map(function (b) {
+      var hasB = c.badges.indexOf(b.id) >= 0;
+      return '<div class="badge-c ' + (hasB ? "earned" : "locked") + '">' + badgeSvg(b.icon, hasB ? "#d0ad6b" : "#6b6863") + "<b>" + esc(T(b.en, b.ar)) + "</b><span>" + esc(T(b.den, b.dar)) + "</span></div>";
+    }).join("");
+    $("bonus").innerHTML = BONUS().map(function (b) { return '<div class="tile"><span class="tag">' + esc(b[0]) + "</span><h3>" + esc(b[1]) + "</h3><p>" + esc(b[2]) + "</p></div>"; }).join("");
+    $("refCode").textContent = c.code;
+    $("bday").value = c.birthday || "";
+  }
+  function BONUS() {
+    return [
+      [T("Friends", "ترشيح"), T("Bring a friend", "هات صاحبك"), T("Give your friend your card code. He writes it when he joins. After his first haircut, you get 1 stamp.", "ادّي صاحبك كود الكارت بتاعك. يكتبه وهو بيشترك. بعد أول حلاقة ليه، تاخد ختم.")],
+      [T("Birthday", "عيد ميلاد"), T("Birthday month", "شهر ميلادك"), T("Get 2 stamps for each visit in your birthday month.", "خد ختمين في كل زيارة في شهر ميلادك.")],
+      [T("Quiet days", "أيام هادية"), T("2 stamps on quiet days", "ختمين في الأيام الهادية"), T("Come on Tuesday or Wednesday and get 2 stamps.", "تعالى يوم التلات أو الأربع وخد ختمين.")],
+      [T("Come often", "سلسلة"), T("Come back fast", "ارجع بسرعة"), T("Come 3 times in a row, each less than 3 weeks apart, and win a badge.", "تعالى ٣ مرات ورا بعض، كل مرة في أقل من ٣ أسابيع، واكسب شارة.")],
+      [T("Family", "عيلة"), T("Kids count too", "الأطفال بيتحسبوا"), T("Your child's haircut gives you 1 stamp.", "حلاقة ابنك بتديك ختم.")],
+      [T("Eid", "العيد"), T("Eid booking", "حجز العيد"), T("Silver and Gold members can book for Eid 1 week early.", "الفضي والذهبي بيحجزوا للعيد قبل الكل بأسبوع.")],
+      [T("Review", "تقييم"), T("Leave a review", "اكتب تقييم"), T("Write a Google review and get 1 stamp.", "اكتب تقييم على جوجل وخد ختم.")],
+      [T("Photo", "صورة"), T("Photo prize", "جايزة الصورة"), T("Post a photo of your haircut and tag the shop. Best photo each month wins a free haircut.", "انزل صورة حلاقتك واعمل تاج للمحل. أحلى صورة كل شهر تكسب حلاقة مجانية.")]
+    ];
+  }
+  $("copyRef").addEventListener("click", function () { copy($("refCode").textContent); });
+  $("bday").addEventListener("change", async function () {
+    if (!ME || !db) return;
+    var r = await db.rpc("set_birthday", { p_token: TOKEN, p_birthday: $("bday").value || null });
+    if (!r.error) { ME.birthday = $("bday").value; toast(T("Saved. You get 2 stamps in your birthday month.", "اتحفظ. هتاخد ختمين في شهر ميلادك.")); }
+  });
+
+  /* ================= GIFTS (real) ================= */
+  var G = { opt: "combo", design: "g-black", code: "" };
+  var GOPTS = ["cut", "combo", "groom"];
+  function svcById(id) { return SERVICES.filter(function (x) { return x.id === id; })[0]; }
+  function renderGift() {
+    var o = $("gOpts"); o.innerHTML = "";
+    GOPTS.forEach(function (id) {
+      var s = svcById(id);
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = T(s.en, s.ar);
+      b.setAttribute("aria-pressed", G.opt === id);
+      b.onclick = function () { G.opt = id; G.code = ""; renderGift(); };
+      o.appendChild(b);
+    });
+    var dz = $("gDesigns"); dz.innerHTML = "";
+    [["g-black", T("Black", "أسود")], ["g-gold", T("Gold", "دهبي")], ["g-eid", T("Eid", "العيد")]].forEach(function (d) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = d[1];
+      b.setAttribute("aria-pressed", G.design === d[0]);
+      b.onclick = function () { G.design = d[0]; renderGift(); };
+      dz.appendChild(b);
+    });
+    var s = svcById(G.opt);
+    var card = $("giftCard");
+    card.className = "gift " + G.design;
+    var cres = card.querySelector(".crescent");
+    if (G.design === "g-eid" && !cres) { var c = document.createElement("div"); c.className = "crescent"; card.appendChild(c); }
+    if (G.design !== "g-eid" && cres) cres.remove();
+    $("gAmt").innerHTML = esc(T(s.en, s.ar)) + "<small>" + esc(T("A gift from Sameh & Mazen", "هدية من سامح ومازن")) + "</small>";
+    $("gMsg").textContent = $("gText").value ? "“" + $("gText").value + "”" : "";
+    $("gFromTo").textContent = T("To ", "إلى ") + ($("gTo").value || "…") + T(" · from ", " · من ") + ($("gFrom").value || "…");
+    $("gCode").textContent = G.code || "GIFT-·····";
+  }
+  ["gTo", "gFrom", "gText"].forEach(function (id) { $(id).addEventListener("input", renderGift); });
+  $("gMake").addEventListener("click", async function () {
+    if (!db) { toast(T("The shop's database is not connected yet.", "قاعدة البيانات لسه مش متوصلة.")); return; }
+    var s = svcById(G.opt);
+    $("gMake").disabled = true;
+    var r = await db.rpc("create_gift", { p_service: s.en, p_to: $("gTo").value, p_from: $("gFrom").value, p_message: $("gText").value });
+    $("gMake").disabled = false;
+    if (r.error) { toast(r.error.message); return; }
+    G.code = r.data; renderGift();
+    copy(G.code, T("Gift code made and copied: ", "كود الهدية اتعمل واتنسخ: ") + G.code);
+  });
+  $("gCheckForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var st = $("gState"); st.hidden = false;
+    if (!db) { st.className = "gstate bad"; st.textContent = T("The shop's database is not connected yet.", "قاعدة البيانات لسه مش متوصلة."); return; }
+    var r = await db.rpc("check_gift", { p_code: $("gCheck").value });
+    var g = r.data;
+    if (r.error || !g) { st.className = "gstate bad"; st.textContent = T("We can't find this code. Check the letters and try again.", "الكود ده مش موجود. راجع الحروف وجرّب تاني."); }
+    else if (g.used) { st.className = "gstate bad"; st.textContent = T("This gift was already used.", "الهدية دي اتستخدمت قبل كده."); }
+    else if (!g.active) { st.className = "gstate wait"; st.textContent = T("Almost ready. The person who gave it must pay at the shop first.", "قرّبت. اللي جابلك الهدية لازم يدفع في المحل الأول."); }
+    else { var sv = SERVICES.filter(function (x) { return x.en === g.service; })[0]; st.className = "gstate ok"; st.textContent = T("Ready! You have a free " + g.service + " from " + (g.from_name || "a friend") + ". Show this code at the shop.", "جاهزة! عندك " + (sv ? sv.ar : g.service) + " مجانًا من " + (g.from_name || "صاحبك") + ". ورّي الكود في المحل."); }
+  });
+
+  /* ================= BARBER PAGE (real) ================= */
+  var barberOK = false, bList = [], bSearch = "", scanner = null;
+  async function barberSession() {
+    if (!db) return;
+    var s = await db.auth.getSession();
+    if (s.data && s.data.session) {
+      var ok = await db.rpc("is_barber");
+      barberOK = !!ok.data;
+      if (!barberOK) { $("loginErr").textContent = "This account is not a barber account."; await db.auth.signOut(); }
+    } else barberOK = false;
+    renderBarber();
+    if (barberOK) refreshBarber();
+  }
+  $("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    $("loginErr").textContent = "";
+    if (!db) { $("loginErr").textContent = "The database is not connected yet."; return; }
+    var r = await db.auth.signInWithPassword({ email: $("lEmail").value.trim(), password: $("lPass").value });
+    if (r.error) { $("loginErr").textContent = "Wrong email or password."; return; }
+    $("lPass").value = "";
+    barberSession();
+  });
+  $("logoutBtn").addEventListener("click", async function () { stopScan(); await db.auth.signOut(); barberOK = false; renderBarber(); });
+
+  async function refreshBarber() {
+    var a = await db.rpc("b_customers", { p_search: bSearch });
+    var b = await db.rpc("b_today");
+    var g = await db.rpc("b_gifts");
+    if (a.error) { $("scanErr").textContent = a.error.message; return; }
+    bList = a.data || [];
+    if (!b.error) {
+      $("tStamps").textContent = b.data.stamps; $("tRewards").textContent = b.data.prizes; $("tClients").textContent = b.data.members;
+      $("log").innerHTML = b.data.log.length ? b.data.log.map(function (l) {
+        var t = new Date(l.at).toTimeString().slice(0, 5);
+        return "<li><time>" + t + "</time><b>" + esc(l.kind) + "</b> " + esc(l.customer || "") + " " + esc(l.detail || "") + "</li>";
+      }).join("") : "<li>Nothing yet.</li>";
+    }
+    renderGiftList(g.data || []);
+    renderBarber();
+  }
+  async function act(promise, okMsg) {
+    var r = await promise;
+    if (r.error) { toast(r.error.message); return null; }
+    if (okMsg) toast(okMsg);
+    await refreshBarber();
+    return r.data;
+  }
+  function renderBarber() {
+    $("loginBox").hidden = barberOK; $("room").hidden = !barberOK;
+    if (!barberOK) return;
+    var t = today();
+    var wrap = $("clients"); wrap.innerHTML = "";
+    if (!bList.length) wrap.innerHTML = '<p class="muted small">No customers found.</p>';
+    bList.forEach(function (c) {
+      var tier = tierOf(c), p = pending(c).filter(function (n) { return n !== 7; });
+      var box = document.createElement("div"); box.className = "client";
+      var mini = ""; for (var i = 1; i <= TOTAL; i++) mini += '<i class="' + (i <= c.stamps ? "on " : "") + (REWARDS[i] ? "r" : "") + '"></i>';
+      box.innerHTML = '<div class="client-head"><h3></h3><span class="tierpill ' + tier.id + '">' + esc(tier.en) + '</span></div><span class="small muted mono"></span><div class="mini">' + mini + '</div><div class="pills row"></div><div class="row act"></div>';
+      box.querySelector("h3").textContent = c.name;
+      box.querySelector(".mono").textContent = c.code + " · " + c.phone + " · " + c.stamps + "/10 · " + c.lifetime + " visits";
+      var pills = box.querySelector(".pills");
+      if (c.pending_wheel) pills.innerHTML += '<span class="pill">Prize wheel ready</span>';
+      if (c.wheel_prize) pills.innerHTML += '<span class="pill">Won: ' + esc(c.wheel_prize) + "</span>";
+      if (p.length) pills.innerHTML += '<span class="pill">Prize ready: ' + esc(REWARDS[p[0]].en) + "</span>";
+      var a = box.querySelector(".act");
+      function btn(label, cls, fn, dis) { var b = document.createElement("button"); b.type = "button"; if (cls) b.className = cls; b.textContent = label; b.disabled = !!dis; b.onclick = function () { b.disabled = true; fn(); }; a.appendChild(b); }
+      var stamped = c.last_visit === t;
+      btn(stamped ? "Stamped today" : "Add stamp", "", function () { act(db.rpc("b_add_stamp", { p_code: c.code }), "Stamp added for " + c.name); }, stamped || c.stamps >= TOTAL);
+      if (c.pending_wheel) btn("Spin the wheel", "gold", function () { openSpin(c); });
+      if (c.wheel_prize) btn("Wheel prize given", "gold", function () { act(db.rpc("b_wheel_given", { p_code: c.code }), "Done"); });
+      if (p.length) btn("Give prize: " + REWARDS[p[0]].en, "gold", function () { act(db.rpc("b_give_reward", { p_code: c.code, p_n: p[0] }), "Prize given"); });
+      btn("+1 kid", "ghost", function () { act(db.rpc("b_add_stamp", { p_code: c.code, p_bonus: "kid haircut" }), "Extra stamp added"); }, c.stamps >= TOTAL);
+      btn("+1 review", "ghost", function () { act(db.rpc("b_add_stamp", { p_code: c.code, p_bonus: "review" }), "Extra stamp added"); }, c.stamps >= TOTAL);
+      wrap.appendChild(box);
+    });
+  }
+  function renderGiftList(gifts) {
+    var gl = $("giftList");
+    gl.innerHTML = gifts.length ? "" : "<li>No gift codes yet.</li>";
+    gifts.forEach(function (g) {
+      var li = document.createElement("li");
+      li.innerHTML = "<b></b> <span></span> ";
+      li.querySelector("b").textContent = g.code;
+      li.querySelector("span").textContent = g.service + " · to " + (g.to_name || "") + " from " + (g.from_name || "") + (g.used ? " · USED" : g.active ? " · ready to use" : " · not paid yet");
+      if (!g.active && !g.used) { var b = document.createElement("button"); b.type = "button"; b.className = "ghost"; b.style.padding = "4px 10px"; b.textContent = "Paid, turn on"; b.onclick = function () { act(db.rpc("b_gift_activate", { p_code: g.code }), "Gift turned on"); }; li.appendChild(b); }
+      if (g.active && !g.used) { var u = document.createElement("button"); u.type = "button"; u.className = "gold"; u.style.padding = "4px 10px"; u.textContent = "Use now"; u.onclick = function () { act(db.rpc("b_gift_use", { p_code: g.code }), "Gift used: free " + g.service); }; li.appendChild(u); }
+      gl.appendChild(li);
+    });
+  }
+  $("useGiftForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var r = await db.rpc("b_gift_use", { p_code: $("useGift").value });
+    if (r.error) { $("useGiftMsg").textContent = r.error.message; return; }
+    $("useGiftMsg").textContent = ""; $("useGift").value = "";
+    toast("Gift used: free " + r.data.service); refreshBarber();
+  });
+  $("scanForm").addEventListener("submit", function (e) { e.preventDefault(); bSearch = $("scan").value.trim(); $("scanErr").textContent = ""; refreshBarber(); });
+
+  // camera scanner
+  function stopScan() { if (scanner) { try { scanner.stop().then(function () { scanner.clear(); }); } catch (e) {} scanner = null; } $("reader").hidden = true; $("scanCam").textContent = "Scan card with camera"; }
+  $("scanCam").addEventListener("click", function () {
+    if (scanner) { stopScan(); return; }
+    if (!window.Html5Qrcode) { $("scanErr").textContent = "The camera scanner did not load. Type the code instead."; return; }
+    $("reader").hidden = false; $("scanCam").textContent = "Stop camera";
+    scanner = new Html5Qrcode("reader");
+    scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 220 }, function (text) {
+      $("scan").value = text; bSearch = text; stopScan(); refreshBarber(); toast("Found " + text);
+    }).catch(function () { $("scanErr").textContent = "Camera blocked. Allow the camera, or type the code."; stopScan(); });
+  });
+
+  /* wheel */
+  var spinC = null, rot = 0;
+  (function buildWheel() {
+    var seg = 360 / WHEEL.length, stops = [];
+    WHEEL.forEach(function (w, i) { stops.push(w.c + " " + (i * seg) + "deg " + ((i + 1) * seg) + "deg"); });
+    $("wheel").style.background = "conic-gradient(" + stops.join(",") + ")";
+  })();
+  function openSpin(c) {
+    spinC = c; $("spinWho").textContent = c.name; $("spinOut").textContent = ""; $("spinGo").disabled = false;
+    var dlg = $("spinDlg"); if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
+  $("spinGo").addEventListener("click", async function () {
+    $("spinGo").disabled = true;
+    var r = await db.rpc("b_spin", { p_code: spinC.code });
+    if (r.error) { $("spinOut").textContent = r.error.message; return; }
+    var idx = r.data.index, seg = 360 / WHEEL.length;
+    rot = rot - (rot % 360) + 360 * 5 + (360 - (idx * seg + seg / 2));
+    $("wheel").style.transform = "rotate(" + rot + "deg)";
+    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(function () { $("spinOut").textContent = "Won: " + r.data.prize; refreshBarber(); }, reduce ? 50 : 4100);
+  });
+  $("spinClose").addEventListener("click", function () { var d = $("spinDlg"); if (d.close) d.close(); else d.removeAttribute("open"); });
+
+  /* ================= routing ================= */
+  var VIEWS = ["home", "book", "club", "style", "gifts", "barber"];
+  function route() {
+    var h = location.hash.replace("#", "") || "home";
+    if (VIEWS.indexOf(h) < 0) h = "home";
+    VIEWS.forEach(function (v) { $("v-" + v).hidden = v !== h; });
+    document.querySelectorAll("[data-tab]").forEach(function (a) { a.setAttribute("aria-current", a.getAttribute("data-tab") === h ? "page" : "false"); });
+    return h;
+  }
+  function renderAll() {
+    route();
+    drawFresh(); renderBook(); renderClub(); renderQuiz(); renderGift(); renderBarber();
+    $("waShow").textContent = CONFIG.whatsapp ? "+20 101 793 6378" : T("Number coming soon", "الرقم قريب");
+  }
+  window.addEventListener("hashchange", function () { renderAll(); window.scrollTo(0, 0); if (barberOK && location.hash === "#barber") refreshBarber(); if (location.hash === "#club") loadMe(); });
+  setInterval(function () { if (document.hidden) return; if (barberOK && location.hash === "#barber") refreshBarber(); else if (ME && location.hash === "#club") loadMe(); }, 20000);
+  applyLang();
+  renderAll();
+  if (!db) { var n = document.createElement("p"); n.className = "note gut"; n.textContent = "Setup needed: add the Supabase URL and key in CONFIG."; document.querySelector("main").prepend(n); }
+  loadMe();
+  barberSession();
+  if (db) db.auth.onAuthStateChange(function () { setTimeout(barberSession, 0); });
+})();
+</script>
+</body>
+</html>
